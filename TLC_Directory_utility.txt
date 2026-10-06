@@ -1,0 +1,57 @@
+                       tlc_top
+                          |
+        +-----------------+-----------------+
+        |                 |                 |
+   tlc_a_channel     tlc_directory    tlc_txn_table
+        |                 |                 |
+        |                 +--------+--------+
+        |                          |
+        |                    tlc_probe_tracker
+        |                          |
+        +--------------------------+
+        |
+   tlc_source_table
+        |
+   tlc_d_channel
+        |
+   tlc_sink_table
+        |
+   tlc_e_channel
+   
+   
+   
+   
+   //*********************************************************************//
+   
+   directory
+   │
+   │ target_clients
+   ▼
+tlc_probe_tracker
+   │
+   │ probe request
+   ▼
+tlc_b_channel
+   │
+   ▼
+client
+   │
+   │ ProbeAck / ProbeAckData
+   ▼
+tlc_c_channel
+   │
+   ▼
+tlc_probe_tracker
+   │
+   ├── probe complete
+   ├── dirty data received
+   └── all acknowledgements received
+            │
+            ▼
+       tlc_directory
+            │
+            ▼
+        Grant decision
+		
+//******************************************************************************//
+

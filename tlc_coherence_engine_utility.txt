@@ -1,0 +1,54 @@
+                         tlc_top
+                            │
+        ┌───────────────────┼───────────────────┐
+        │                   │                   │
+        ▼                   ▼                   ▼
+  tlc_a_channel       tlc_b_channel       tlc_c_channel
+        │                   │                   │
+        └───────────────────┼───────────────────┘
+                            │
+                            ▼
+                 ┌──────────────────────┐
+                 │ tlc_coherence_engine │
+                 │                      │
+                 │ Directory decision   │
+                 │ Ordering             │
+                 │ Acquire lifecycle    │
+                 │ Probe lifecycle      │
+                 │ Release lifecycle    │
+                 │ Memory lifecycle     │
+                 │ Grant lifecycle      │
+                 └──────┬───────┬───────┘
+                        │       │
+             ┌──────────┘       └──────────┐
+             ▼                             ▼
+      tlc_probe_engine              tlc_memory_engine
+             │                             │
+      tlc_probe_tracker              tlc_txn_table
+             │                             │
+             └──────────────┬──────────────┘
+                            ▼
+                     tlc_grant_engine
+                            │
+                            ▼
+                       tlc_d_channel
+                            │
+                            ▼
+                       tlc_e_channel
+					   
+					   
+//===================================================================//
+
+One important correction for the next revision
+
+For a true production TileLink-C implementation, I would change the above architecture before integrating it with the previously generated modules:
+
+Do not use dir_owner directly as a sink ID. A directory owner/client ID and a TL-C sink ID are different namespaces.
+tlc_sink_table.sv should allocate the actual sink ID for each Probe/Grant transaction.
+tlc_probe_tracker.sv should track multiple simultaneous probes, rather than the single probe_outstanding_q shown here.
+tlc_coherence_engine.sv should maintain a transaction context per source, rather than one global active_* context, if MAX_OUTSTANDING > 1.
+AcquireBlock/AcquirePerm should be decoded using the exact TileLink parameter encodings from tlc_pkg.sv; they should not be inferred merely from is_block/is_perm.
+Directory updates need to be atomic with transaction completion, otherwise a stalled Grant can leave the directory in an inconsistent state.
+The final implementation should have separate FSMs for Acquire, Probe, Release and Grant, coordinated by a transaction scoreboard, rather than one monolithic FSM.
+
+That is the direction I recommend for the next tlc_top.sv: a multi-outstanding, source-indexed coherence controller rather than the single-active-transaction controller above.

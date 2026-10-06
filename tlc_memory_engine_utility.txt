@@ -1,0 +1,29 @@
+                 TL-C coherence manager
+                         │
+          ┌──────────────┼──────────────┐
+          │              │              │
+          ▼              ▼              ▼
+   Acquire Engine   Release Engine   Probe Engine
+          │              │              │
+          └──────────────┼──────────────┘
+                         │
+                         ▼
+                 tlc_memory_engine
+                         │
+              ┌──────────┴──────────┐
+              │                     │
+          Read request          Write request
+              │                     │
+              └──────────┬──────────┘
+                         ▼
+                   LLC / SRAM
+                         │
+                         ▼
+                  Memory response
+                         │
+                         ▼
+                 tlc_memory_engine
+                         │
+                ┌────────┴────────┐
+                ▼                 ▼
+           Grant Engine      Release completion

@@ -1,0 +1,26 @@
+                 TL-C Domain A
+                       │
+                +------+------+
+                | TL-C Agent  |
+                +------+------+
+                       │
+                 A/B/C/D/E
+                       │
+              +--------▼---------+
+              | tlc_c2c_bridge   |
+              |                  |
+              | Protocol mapper |
+              | Source mapper   |
+              | Sink mapper     |
+              | Txn tracking    |
+              +--------+---------+
+                       │
+                C2C / UCIe adapter
+                       │
+              +--------▼---------+
+              |   Link layer     |
+              | CRC / retry      |
+              | flow control     |
+              +--------+---------+
+                       │
+                 TL-C Domain B

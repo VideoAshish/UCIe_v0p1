@@ -1,0 +1,28 @@
+                    tlc_acquire_engine
+                            │
+                            │ allocate sink
+                            ▼
+                    tlc_sink_table
+                            │
+                            │ sink = N
+                            ▼
+                      Grant / GrantData
+                            │
+                            ▼
+                       D channel
+                            │
+                            ▼
+                          Client
+                            │
+                       accepts Grant
+                            │
+                            │ E: GrantAck(N)
+                            ▼
+                    tlc_e_channel
+                            │
+                            ▼
+                    tlc_sink_table
+                            │
+                            │ free(N)
+                            ▼
+                     sink available

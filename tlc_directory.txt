@@ -1,0 +1,24 @@
+                         +------------------+
+                         | tlc_directory    |
+                         +--------+---------+
+                                  |
+                         permission / grant
+                                  |
+                                  v
+                         +------------------+
+                         | tlc_grant_engine |
+                         +--------+---------+
+                                  |
+                                  v
+                         +------------------+
+                         | tlc_d_channel    |
+                         |                  |
+                         | skid buffer      |
+                         | source preserve  |
+                         | sink preserve    |
+                         | data preserve    |
+                         +--------+---------+
+                                  |
+                                  | D
+                                  v
+                               CLIENT

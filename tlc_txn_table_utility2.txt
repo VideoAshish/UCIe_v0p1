@@ -1,0 +1,32 @@
+                    +-------------------+
+A request -------->| tlc_txn_table     |
+                    +---------+---------+
+                              |
+                              v
+                    +-------------------+
+                    | tlc_directory     |
+                    |                   |
+                    | line state        |
+                    | owner             |
+                    | sharers           |
+                    | dirty             |
+                    +---------+---------+
+                              |
+                    current state
+                              |
+                              v
+                    +-------------------+
+                    | tlc_permission_mgr|
+                    |                   |
+                    | legality          |
+                    | permission        |
+                    | probe requirement |
+                    | dirty requirement |
+                    +----+---------+----+
+                         |         |
+                    Probe|         |Grant
+                         v         v
+                  B/C probe     D Grant
+				  
+				  
+				  

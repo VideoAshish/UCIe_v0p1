@@ -1,0 +1,69 @@
+                         +----------------+
+                         |     FREE       |
+                         +-------+--------+
+                                 |
+                         Acquire accepted
+                                 |
+                                 v
+                         +----------------+
+                         |   ALLOCATED    |
+                         | Grant pending  |
+                         +-------+--------+
+                                 |
+                         D: Grant/GrantData
+                                 |
+                                 v
+                         +----------------+
+                         | GRANT SENT     |
+                         | Ack pending    |
+                         +-------+--------+
+                                 |
+                         E: GrantAck fire
+                                 |
+                                 v
+                         +----------------+
+                         |      FREE      |
+                         +----------------+
+						 
+
+A
+│
+├── source = 12
+├── opcode = AcquireBlock
+├── address = 0x8000_0000
+└── param = ...
+       │
+       ▼
+source_table
+       │
+       └── source 12 outstanding
+       
+       +-------------------+
+       | coherence engine  |
+       +---------+---------+
+                 │
+                 │ allocate sink 5
+                 ▼
+             sink_table
+                 │
+                 ├── sink   = 5
+                 ├── source = 12
+                 ├── address
+                 ├── AcquireBlock
+                 └── Grant expectation
+				 
+				 
+				 
+				 
+D: GrantData
+   source = 12
+   sink   = 5
+        │
+        ▼
+     Client
+        │
+E: GrantAck
+   sink = 5
+        │
+        ▼
+sink_table.free(5)

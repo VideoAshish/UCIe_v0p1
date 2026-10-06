@@ -1,0 +1,45 @@
+                    A CHANNEL
+                       │
+                       ▼
+              ┌─────────────────┐
+              │ tlc_acquire_    │
+              │ engine          │
+              └────────┬────────┘
+                       │
+             ┌─────────┼──────────┐
+             │         │          │
+             ▼         ▼          ▼
+        source      directory   permission
+        table       lookup      manager
+             │         │          │
+             └─────────┼──────────┘
+                       │
+                       ▼
+              ┌─────────────────┐
+              │ probe_engine    │
+              │ +               │
+              │ probe_tracker   │
+              └────────┬────────┘
+                       │
+                       ▼
+                  B CHANNEL
+                       │
+              ┌────────┴────────┐
+              │ remote clients  │
+              └────────┬────────┘
+                       │
+                       ▼
+                  C CHANNEL
+                       │
+                       ▼
+                dirty data /
+                 ProbeAck
+                       │
+                       ▼
+                 Grant engine
+                       │
+                       ▼
+                  D CHANNEL
+				  
+//==============================================================//
+

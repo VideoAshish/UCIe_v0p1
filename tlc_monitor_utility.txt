@@ -1,0 +1,27 @@
+                 TL-C CLIENT
+                     │
+                     ▼
+              ┌──────────────┐
+              │ skid buffers │
+              └──────┬───────┘
+                     │
+              ┌──────▼───────┐
+              │ tlc_monitor  │
+              │              │
+              │ A B C D E    │
+              │ assertions   │
+              │ counters     │
+              │ timeout      │
+              └──────┬───────┘
+                     │
+                     ▼
+              ┌──────────────┐
+              │ tlc_router   │
+              └──────┬───────┘
+                     │
+              ┌──────▼───────┐
+              │ tlc_crossbar │
+              └──────┬───────┘
+                     │
+                     ▼
+              tlc_manager_agent

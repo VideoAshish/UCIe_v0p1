@@ -1,0 +1,26 @@
+                         ┌─────────────────────┐
+                         │    tlc_a_channel    │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │ tlc_source_table    │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │  tlc_order_engine   │
+                         │                     │
+                         │ source dependency  │
+                         │ line dependency    │
+                         │ RAW/WAR/WAW        │
+                         │ coherence ordering │
+                         └──────────┬──────────┘
+                                    │
+                 ┌──────────────────┼──────────────────┐
+                 ▼                  ▼                  ▼
+          Acquire Engine      Memory Engine      Probe Engine
+                 │                  │                  │
+                 └──────────────────┼──────────────────┘
+                                    ▼
+                             Transaction Table

@@ -1,0 +1,26 @@
+                       ┌─────────────────┐
+                       │   tlc_a_channel │
+                       └────────┬────────┘
+                                │
+                ┌───────────────┴───────────────┐
+                │                               │
+                ▼                               ▼
+       tlc_acquire_engine               tlc_release_engine
+                │                               │
+                │                               ├── Directory update
+                │                               │
+                ▼                               ▼
+       tlc_probe_engine                    tlc_c_channel
+                │                               │
+          ┌─────┴─────┐                         │
+          │           │                         │
+          ▼           ▼                         ▼
+      B channel    C channel                C Release
+          │           │
+          └─────┬─────┘
+                ▼
+          tlc_d_channel
+                │
+                ▼
+             Grant
+			 

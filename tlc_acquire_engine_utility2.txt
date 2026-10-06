@@ -1,0 +1,33 @@
+                    ┌─────────────────────┐
+                    │ tlc_acquire_engine  │
+                    └──────────┬──────────┘
+                               │
+                               │ grant_req
+                               ▼
+                    ┌─────────────────────┐
+                    │  tlc_grant_engine   │
+                    └───────┬───────┬─────┘
+                            │       │
+                   sink ID  │       │ D: Grant/GrantData
+                            ▼       ▼
+                    ┌──────────┐  ┌──────────┐
+                    │sink_table│  │D channel │
+                    └──────────┘  └────┬─────┘
+                                       │
+                                       ▼
+                                  Grant receiver
+                                       │
+                                       │ E: GrantAck
+                                       ▼
+                               ┌──────────────┐
+                               │ E channel    │
+                               └──────┬───────┘
+                                      │
+                                      ▼
+                               GrantAck match
+                                      │
+                                      ▼
+                              sink ID released
+                                      │
+                                      ▼
+                                  completion

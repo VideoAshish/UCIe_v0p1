@@ -1,0 +1,40 @@
+tlc_txn_table
+ ├── txn[0] ── tlc_probe_tracker[0]
+ ├── txn[1] ── tlc_probe_tracker[1]
+ ├── txn[2] ── tlc_probe_tracker[2]
+ ├── txn[3] ── tlc_probe_tracker[3]
+ └── ...
+ 
+ //============================================//
+                      tlc_permission_mgr
+                              |
+                              | target bitmap
+                              v
+                    +---------------------+
+                    | tlc_probe_tracker   |
+                    |---------------------|
+                    | target_bitmap        |
+                    | sent_bitmap          |
+                    | ack_bitmap           |
+                    | outstanding_bitmap   |
+                    | dirty_received       |
+                    | data_received        |
+                    | timeout              |
+                    +----------+----------+
+                               |
+                    send/ack notifications
+                               |
+                               v
+                    +---------------------+
+                    | tlc_probe_engine    |
+                    |---------------------|
+                    | Probe arbitration   |
+                    | B-channel valid     |
+                    | C-channel ready     |
+                    | next target select  |
+                    +----------+----------+
+                               |
+                     +---------+---------+
+                     |                   |
+                     v                   v
+                 TL-C B             TL-C C

@@ -1,0 +1,76 @@
+Below is a parameterized tlc_crossbar.sv intended to sit between multiple TL-C clients and the single TL-C manager/home agent we have been building.
+
+It provides:
+
+Multiple TL-C client ports
+One manager port
+Independent A/C/E → manager arbitration
+B/D manager → client demultiplexing
+Source-ID based D routing
+Sink-ID based E routing
+Configurable source/sink widths
+One-hot arbitration
+Registered output holding for B/D
+No combinational ready/valid loop between client and manager
+Fair round-robin arbitration
+Per-channel isolation
+Protocol assertions
+Parameter checks
+Synthesis-friendly implementation
+
+Important architectural assumption: this implementation uses encoded client identity in the upper bits of source and sink. This must match the ID allocation scheme used by your tlc_source_table.sv and tlc_sink_table.sv.
+
+
+//==============================================================//
+
+                       ┌─────────────────────┐
+                       │     tlc_client0     │
+                       └─────────┬───────────┘
+                                 │
+                       ┌─────────▼───────────┐
+                       │                     │
+                       │                     │
+                       │                     │
+       ┌──────────────►│    tlc_crossbar     │◄──────────────┐
+       │               │                     │               │
+       │               │                     │               │
+       │               └─────────┬───────────┘               │
+       │                         │                           │
+       │                         │ TL-C                      │
+       │                         ▼                           │
+       │               ┌─────────────────────┐               │
+       │               │ tlc_manager_agent   │               │
+       │               └─────────┬───────────┘               │
+       │                         │                           │
+       │                         ▼                           │
+       │               ┌─────────────────────┐               │
+       │               │  tlc_coherence      │               │
+       │               │      engine         │               │
+       │               └─────────┬───────────┘               │
+       │                         │                           │
+       │               ┌─────────┴───────────┐               │
+       │               ▼                     ▼               │
+       │       tlc_directory          tlc_probe_engine       │
+       │                                                     │
+       │                                                     │
+       └────────────── clients 1 ... N ──────────────────────┘
+	   
+	   
+//=====================================================================//
+
+One important change I recommend
+
+For the full production version, I would not leave B/D routing purely combinational as above. The next revision should add:
+
+Manager B ──► B skid FIFO ──► client
+Manager D ──► D skid FIFO ──► client
+
+Client A ──► A skid FIFO ──► RR arbiter ──► Manager
+Client C ──► C skid FIFO ──► RR arbiter ──► Manager
+Client E ──► E skid FIFO ──► RR arbiter ──► Manager
+
+That gives the crossbar the stronger property you requested earlier:
+
+no combinational ready/valid loops anywhere in the complete TL-C fabric.
+
+It also allows the tlc_txn_table.sv and tlc_probe_tracker.sv to support genuinely concurrent outstanding transactions rather than forcing the manager agent into a single-active-transaction model.

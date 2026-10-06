@@ -1,0 +1,59 @@
+                         ┌────────────────────────┐
+                         │     TL-C CLIENT        │
+                         │  tlc_client_agent.sv   │
+                         └───────────┬────────────┘
+                                     │
+                         TileLink A/B/C/D/E
+                                     │
+                                     ▼
+                         ┌────────────────────────┐
+                         │     TL-C MANAGER       │
+                         │  tlc_manager_agent.sv  │
+                         └───────────┬────────────┘
+                                     │
+             ┌───────────────────────┼──────────────────────┐
+             │                       │                      │
+             ▼                       ▼                      ▼
+       tlc_directory          tlc_probe_engine       tlc_memory_engine
+             │                       │                      │
+             ▼                       ▼                      ▼
+       permission_mgr          probe_tracker          memory/DRAM
+             │                       │
+             └───────────────────────┼─────────────────────┘
+                                     ▼
+                            tlc_transaction_table
+							
+							
+//===================================================================//
+
+Issue Improvements:
+The module above is a manager-agent integration shell, but I would not yet call it production-signoff RTL. The next architectural step should be to eliminate the single active_* context and make the manager genuinely multi-outstanding:
+
+                  tlc_manager_agent
+                         │
+          ┌──────────────┼──────────────┐
+          ▼              ▼              ▼
+       Source 3       Source 7       Source 12
+          │              │              │
+       Acquire        Acquire         Acquire
+          │              │              │
+          ▼              ▼              ▼
+       Txn[3]          Txn[7]          Txn[12]
+          │              │              │
+          └──────────────┼──────────────┘
+                         ▼
+                  Probe dependency
+                         │
+                ┌────────┴────────┐
+                ▼                 ▼
+            Client A           Client B
+             Probe              Probe
+                │                 │
+                └────────┬────────┘
+                         ▼
+                    dirty-data
+                    collection
+                         │
+                         ▼
+                       Grant
+					   

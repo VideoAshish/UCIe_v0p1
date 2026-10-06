@@ -1,0 +1,66 @@
+Important correction before using this as a literal compile-ready top
+
+The earlier individual modules we generated were developed independently, so their exact port signatures may not be identical to the assumptions above. In particular, a true production integration should not connect multiple engines directly to the same ready signal.
+
+The correct final architecture is:
+
+
+
+                         tlc_top
+                            │
+             ┌──────────────┼──────────────┐
+             │              │              │
+             A              B              C
+             │              │              │
+        A ingress       B ingress       C ingress
+             │              │              │
+             └──────────────┼──────────────┘
+                            │
+                     tlc_crossbar
+                            │
+                  ┌─────────┴─────────┐
+                  │                   │
+           coherence path       memory path
+                  │                   │
+        ┌─────────┴─────────┐         │
+        │                   │         │
+  probe/acquire/release    grant      │
+        │                   │         │
+        └─────────┬─────────┘         │
+                  │                   │
+                  └─────────┬─────────┘
+                            │
+                     D response mux
+                            │
+                            D
+                            │
+                            E
+							
+							
+
+//==========================================================================//
+
+In other words, tlc_crossbar should be the single arbitration point, and the engines should have request/response interfaces rather than all directly driving the same TL-C channel.
+
+For the full production-grade version, I would make the next revision of tlc_top.sv the definitive integration with:
+
+one owner per A/B/C/D/E ready/valid
+explicit arbitration grants
+source-table allocation before A acceptance
+sink allocation before Grant emission
+transaction-table lookup on D
+probe-tracker lookup on C
+dirty-data collection path
+AcquireBlock / AcquirePerm distinction
+Release / ReleaseData distinction
+Grant / GrantData distinction
+out-of-order D response support
+per-source ordering enforcement
+per-cache-line serialization
+timeout → tlc_error_handler
+quarantine without creating a ready/valid deadlock
+optional TL-C ↔ tlc_c2c_bridge interface
+SVA connected to the actual transaction metadata, rather than only raw channel signals.
+
+That is the version I would use as the final integration RTL for the TL-C subsystem.
+

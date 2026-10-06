@@ -1,0 +1,25 @@
+                    tlc_memory_engine
+                           │
+                           │ alloc_valid
+                           ▼
+                ┌──────────────────────┐
+                │ tlc_mem_id_allocator │
+                │                      │
+                │  ID ownership bitmap │
+                │  priority encoder    │
+                │  recycle logic       │
+                └──────────┬───────────┘
+                           │
+                           │ alloc_id
+                           ▼
+                    tlc_txn_table
+                           │
+                           ▼
+                      Memory / LLC
+                           │
+                           │ mem_rsp_id
+                           ▼
+                ┌──────────────────────┐
+                │ tlc_mem_id_allocator │
+                │       free_id        │
+                └──────────────────────┘

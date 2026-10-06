@@ -1,0 +1,92 @@
+                    tlc_acquire_engine
+                            │
+                            │ allocate sink
+                            ▼
+                    tlc_sink_table
+                            │
+                            │ sink = N
+                            ▼
+                      Grant / GrantData
+                            │
+                            ▼
+                       D channel
+                            │
+                            ▼
+                          Client
+                            │
+                       accepts Grant
+                            │
+                            │ E: GrantAck(N)
+                            ▼
+                    tlc_e_channel
+                            │
+                            ▼
+                    tlc_sink_table
+                            │
+                            │ free(N)
+                            ▼
+                     sink available
+					 
+					 
+					 
+//================================================================//
+
+Grant(N)
+   │
+   │ must remain outstanding
+   ▼
+GrantAck(N)
+   │
+   ▼
+free sink N
+
+
+//=====================================================================//
+
+assign sink_ack_valid = e_out_fire;
+assign sink_ack_id    = e_out_sink;
+
+//========================================================================//
+
+tlc_e_channel.out_fire
+        │
+        ├──> tlc_sink_table.free_valid
+        └──> tlc_sink_table.free_sink
+		
+//=========================================================================//
+
+allocated_sink
+    ──Grant──>
+    allocated_sink
+    ──GrantAck──>
+    free_sink
+	
+//==========================================================================//
+
+A-channel request
+      │
+      │ allocate source
+      ▼
++-----------------------+
+| tlc_source_table      |
+|                       |
+| source ID             |
+| A opcode              |
+| A param               |
+| address               |
+| size                  |
+| expected D response   |
+| coherence transaction |
+| outstanding           |
++-----------+-----------+
+            │
+            │ D response
+            ▼
+      validate source
+            │
+            │ D fire
+            ▼
+       free source
+	   
+//===================================================================================//
+

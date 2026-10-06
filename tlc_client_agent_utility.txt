@@ -1,0 +1,43 @@
+Below is tlc_client_agent.sv, designed as the client-side coherence agent for the production-oriented TL-C architecture we have been building.
+
+It sits between the local cache/client and the TL-C A/B/C/D/E channel engines. It handles Acquire generation, Probe reception/response, Grant reception/acknowledgement, Release generation, dirty-data handling, and local permission/state tracking.
+
+//======================================================================//
+
+                         ┌──────────────────────┐
+                         │     Local Cache      │
+                         └──────────┬───────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │  tlc_client_agent   │
+                         │                     │
+                         │ Acquire generation  │
+                         │ Probe handling      │
+                         │ ProbeAck generation │
+                         │ Grant handling      │
+                         │ GrantAck generation │
+                         │ Release generation  │
+                         │ Coherence state     │
+                         └──────────┬──────────┘
+                                    │
+               ┌────────────────────┼────────────────────┐
+               │                    │                    │
+               ▼                    ▼                    ▼
+             TL-A                 TL-B                 TL-C
+               │                    │                    │
+               │                    │                    │
+               │                    ▼                    │
+               │              Probe Engine               │
+               │                                         │
+               └──────────────────┬──────────────────────┘
+                                  ▼
+                                TL-D
+                                  │
+                                  ▼
+                                TL-E
+								
+
+//===================================================================================//
+
+Production integration note: the next revision should connect this agent directly to the previously generated tlc_source_table.sv, tlc_sink_table.sv, tlc_txn_table.sv, and tlc_pkg.sv instead of locally incrementing next_source_q. That is particularly important once you enable the requested multiple outstanding transactions and out-of-order Grant handling. The current interface is deliberately kept explicit so it can be integrated into that scoreboard architecture without introducing combinational channel dependencies.
